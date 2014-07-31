@@ -1,0 +1,47 @@
+#!/bin/sh
+
+#Pre-commit hook to catch some basic code errors
+
+specs_files=""
+src_files=""
+
+all_files=$(git diff-index --cached --name-status HEAD | awk '$1 !=  "R" { print $2 }')
+
+if [[ ! -z "$all_files" ]]; then
+  for file in $all_files;
+  do
+    if [[ "$file" =~ spec\.rb$ ]]; then
+      specs_files="$specs_files $file"
+    elif [[ "$file" =~ .rb$ ]]; then
+      src_files="$src_files $file"
+    fi
+  done
+fi
+
+DIR=$( cd "$( dirname "$0" )" && pwd )
+
+spec_res=""
+src_res=""
+#only run roodi if there are files
+if [[ "$specs_files" =~ [a-zA-Z0-9] ]]; then
+  spec_res=$(roodi "-config=$DIR/roodispec.yml" $specs_files)
+  echo $spec_res
+fi
+if [[ "$src_files" =~ [a-zA-Z0-9] ]]; then
+  src_res=$(roodi "-config=$DIR/roodisrc.yml" $src_files)
+  echo $src_res
+fi
+
+if ( [[ ! "$src_res" == "" ]] && [[ ! "$src_res" =~ "Found 0 errors" ]] ) || ( [[ ! "$spec_res" == "" ]] && [[ ! "$spec_res" =~ "Found 0 errors" ]] ); then
+
+  echo "Continue commit?[y/n]"
+
+  read yn < /dev/tty
+  case $yn in
+    [Yy] ) exit 0;;
+    [Nn] ) echo " Changes will NOT be committed"; exit 1;;
+  esac
+
+fi
+
+exit 0

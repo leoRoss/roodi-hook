@@ -1,0 +1,8 @@
+AssignmentInConditionalCheck:
+CaseMissingElseCheck:
+ClassNameCheck:
+MethodNameCheck:
+ModuleNameCheck:
+CyclomaticComplexityBlockCheck:
+CyclomaticComplexityMethodCheck:
+EmptyRescueBodyCheck:
