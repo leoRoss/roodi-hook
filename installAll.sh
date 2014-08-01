@@ -2,6 +2,8 @@
 
 mydir=$( cd "$( dirname "$0" )" && pwd )
 
-sh $mydir/install.sh cf-mysql-broker
-sh $mydir/install.sh cf-riak-cs-broker
-sh $mydir/install.sh cloud_controller_ng
+while read line; do
+	echo "Installing into repository: $line"
+	sh $mydir/install.sh $line;
+done < "repositories.txt"
+
