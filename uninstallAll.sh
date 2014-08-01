@@ -2,6 +2,8 @@
 
 mydir=$( cd "$( dirname "$0" )" && pwd )
 
-sh $mydir/uninstall.sh cf-mysql-broker
-sh $mydir/uninstall.sh cf-riak-cs-broker
-sh $mydir/uninstall.sh cloud_controller_ng
+while read line; do
+	echo "Uninstalling from repository: $line"
+	sh $mydir/uninstall.sh $line;
+done < "repositories.txt"
+
